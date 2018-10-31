@@ -133,11 +133,8 @@ prog.o: prog.cpp /usr/include/stdc-predef.h /usr/include/c++/7/iostream \
  /usr/include/c++/7/bits/locale_facets.tcc \
  /usr/include/c++/7/bits/basic_ios.tcc \
  /usr/include/c++/7/bits/ostream.tcc /usr/include/c++/7/istream \
- /usr/include/c++/7/bits/istream.tcc /usr/local/include/gaol/gaol.h \
- /usr/local/include/gaol/gaol /usr/local/include/gaol/gaol_config.h \
- /usr/local/include/gaol/gaol_configuration.h \
- /usr/local/include/gaol/gaol_version.h \
- /usr/local/include/gaol/gaol_common.h /usr/include/c++/7/cmath \
+ /usr/include/c++/7/bits/istream.tcc /usr/include/c++/7/cfloat \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/float.h /usr/include/c++/7/cmath \
  /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
@@ -147,6 +144,11 @@ prog.o: prog.cpp /usr/include/stdc-predef.h /usr/include/c++/7/iostream \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
  /usr/include/x86_64-linux-gnu/bits/mathinline.h \
+ /usr/local/include/gaol/gaol.h /usr/local/include/gaol/gaol \
+ /usr/local/include/gaol/gaol_config.h \
+ /usr/local/include/gaol/gaol_configuration.h \
+ /usr/local/include/gaol/gaol_version.h \
+ /usr/local/include/gaol/gaol_common.h \
  /usr/local/include/gaol/gaol_port.h \
  /usr/local/include/gaol/gaol_limits.h /usr/include/c++/7/limits \
  /usr/include/c++/7/stdlib.h /usr/local/include/gaol/gaol_fpu.h \
@@ -508,17 +510,9 @@ prog.o: prog.cpp /usr/include/stdc-predef.h /usr/include/c++/7/iostream \
 
 /usr/include/c++/7/bits/istream.tcc:
 
-/usr/local/include/gaol/gaol.h:
+/usr/include/c++/7/cfloat:
 
-/usr/local/include/gaol/gaol:
-
-/usr/local/include/gaol/gaol_config.h:
-
-/usr/local/include/gaol/gaol_configuration.h:
-
-/usr/local/include/gaol/gaol_version.h:
-
-/usr/local/include/gaol/gaol_common.h:
+/usr/lib/gcc/x86_64-linux-gnu/7/include/float.h:
 
 /usr/include/c++/7/cmath:
 
@@ -541,6 +535,18 @@ prog.o: prog.cpp /usr/include/stdc-predef.h /usr/include/c++/7/iostream \
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
 /usr/include/x86_64-linux-gnu/bits/mathinline.h:
+
+/usr/local/include/gaol/gaol.h:
+
+/usr/local/include/gaol/gaol:
+
+/usr/local/include/gaol/gaol_config.h:
+
+/usr/local/include/gaol/gaol_configuration.h:
+
+/usr/local/include/gaol/gaol_version.h:
+
+/usr/local/include/gaol/gaol_common.h:
 
 /usr/local/include/gaol/gaol_port.h:
 
