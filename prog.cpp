@@ -160,6 +160,7 @@ int main(void)
   interval y = f.intervalExtension(x);
 
   // Print the results
+  std::cout << "An example :";
   std::cout << "\nLet X = [" << x.left() << " , "<< x.right() << "]"<< std::endl;
   std::cout << "Optimal interval extension : ";
   std::cout << "G(X) = [" << y.left() << " , "<< y.right() << "]"<< std::endl;
@@ -172,10 +173,16 @@ int main(void)
   // Boucle de simulations
   do {
 
+    std::cout << "Give two real a & b not null :" << '\n';
+    std::cout << "\tA value for a :" << '\t';
+    std::cin >> a;
+    std::cout << "\tA value for b :" << '\t';
+    std::cin >> b;
+    f = MyFunction(a,b);
     std::cout << "Time to give an interval value X :" << '\n';
-    std::cout << "1. Lower bound\t";
+    std::cout << "\t1. Lower bound\t";
     std::cin >> inf;
-    std::cout << "2. Upper bound\t";
+    std::cout << "\t2. Upper bound\t";
     std::cin >> sup;
     // assume b >= a
     x = interval(inf,sup);
