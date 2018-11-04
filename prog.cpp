@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cfloat> // DBL_MAX
 #include <cmath> // std::nextafter
+#include <iomanip>  // setprecision
 #include "gaol/gaol.h"
 
 // Functions implementations
@@ -11,31 +12,54 @@ double dist(interval X,interval Y){
 }
 float maximum(float a, float b){a > b ? a:b;}
 float minimum(float a, float b){a < b ? a:b;}
-double machineEpsilon(float EPS)
-{
-    // taking a floating type variable
-    double prev_epsilon;
+double machineEpsilon(float EPS){
+  // taking a floating type variable
+  double prev_epsilon;
 
-    // run until condition satisfy
-    while ((1+EPS) != 1)
-    {
-        // copying value of epsilon into previous epsilon
-        prev_epsilon = EPS;
+  // run until condition satisfy
+  while ((1+EPS) != 1){
+    // copying value of epsilon into previous epsilon
+    prev_epsilon = EPS;
+    // dividing epsilon by 2
+    EPS /=2;
+  }
 
-        // dividing epsilon by 2
-        EPS /=2;
-    }
-
-    // print output of the program
-   // std::cout << "Machine Epsilon is : " << prev_epsilon << std::endl;
-    return prev_epsilon ;
+  // print output of the program
+  //std::cout << "Machine Epsilon is : " << prev_epsilon << std::endl;
+  return prev_epsilon ;
 }
-bool typeFormat(double x){
-  double d = 0.;
-  if (x == floor(x))
-        return true;
-    else
-        return false;
+bool typeFormat(double x){bool y; x==floor(x)?y=true:y=false; return y;}
+interval doubleTointerval(double x){double epsilon = machineEpsilon(0.5); interval y; typeFormat(x)? y=interval(x): y=interval(x-epsilon,x+epsilon); return y;}
+// double comparing
+// return true if the difference between a and b is less than absEpsilon, or within relEpsilon percent of the larger of a and b
+bool approximatelyEqualAbsRel(double a, double b, double absEpsilon, double relEpsilon){
+  // Check if the numbers are really close -- needed when comparing numbers near zero.
+  double diff = fabs(a - b);
+  //std::cout << "diff = "<< diff << '\n';
+  if (diff <= absEpsilon)
+    return true;
+
+  // Otherwise fall back to Knuth's algorithm
+  return diff <= ( (fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * relEpsilon);
+}
+bool greaterEqual(double a, double b){
+  double absEpsilon = 1e-7;
+  double relEpsilon = 1e-5;
+  bool y = approximatelyEqualAbsRel(a,b,absEpsilon,relEpsilon);
+  //std::cout << "bool = "<< y << '\n';
+  if (!y) {
+    y = a > b ;
+  }
+  return y ;
+}
+bool lessEqual(double a, double b){
+  double absEpsilon = 1e-7;
+  double relEpsilon = 1e-5;
+  bool y = approximatelyEqualAbsRel(a,b,absEpsilon,relEpsilon);
+  if (!y) {
+    y = a < b ;
+  }
+  return y ;
 }
 class Function{
   public:
@@ -52,9 +76,9 @@ class MyFunction : public Function{
 private:
   interval a ;
   interval b ;
-  double epsilon = machineEpsilon(0.5) ;
 public:
   MyFunction(){
+    std::cout << "Default initialisation" << '\n';
     a = interval(-1) ;
     b = interval(-1);
     std::cout << "### a is initialized to [1,1] ### " << '\n';
@@ -64,19 +88,19 @@ public:
     // Two cases : a is integer or not ;
     // Two cases : b is integer or not ;
     if (a1 != 0 && b1 != 0){
-      if (typeFormat(a1)) {a = interval(a1);}else{a = interval(a1-epsilon,a1+epsilon);}
-      if (typeFormat(b1)) {b = interval(b1);}else{b = interval(b1-epsilon,b1+epsilon);}
+      a = doubleTointerval(a1);
+      b = doubleTointerval(b1);
       std::cout << "### a set to [" << a.left() << " , "<< a.right() << "]  ###"<< std::endl;
       std::cout << "### b set to [" << b.left() << " , "<< b.right() << "]  ###"<< std::endl;
     }else{
       std::cout << "Error : a and b must be different to 0" << '\n';
+      MyFunction();
     }
   }
   interval eval(double y){
     // Precondition : ensure x != 0
-    interval x ;
-    if (typeFormat(y)){x = interval(y);}else{x = interval(y-epsilon,y+epsilon);}
-    return a*x + b/x;
+    interval x = doubleTointerval(y);
+    return eval(x);
   }
   interval eval(interval x){
     return a*x + b/x;
@@ -97,23 +121,23 @@ public:
       y = interval(-GAOL_INFINITY,+GAOL_INFINITY);
     }else{
       if (a.left() > 0 && b.left() > 0) {
-        if (x.left() >= racineDroit.right()) {
+        if (greaterEqual(x.left(), racineDroit.right())) {
           y = interval( (eval(x.left())).left(), eval(x.right()).right() );
-        }else if(0 < x.left() && x.left() <= racineDroit.left() && x.right() >= racineDroit.right() ){
+        }else if(0 < x.left() && lessEqual(x.left(), racineDroit.left())  && greaterEqual(x.right(), racineDroit.right())){
           y = interval( (eval(racineDroit)).left(),maximum( (eval(x.left())).left(), (eval(x.right())).right()));
-        }else if(0 < x.left() && x.left() <= racineDroit.left() && 0 < x.right() && x.right() <= racineDroit.left()){
+        }else if(0 < x.left() && lessEqual(x.left(),racineDroit.left()) && 0 < x.right() && lessEqual(x.right(),racineDroit.left())){
           y = interval( (eval(x.right())).right(), (eval(x.left())).left() );
-        }else if (x.right() <= racineGauche.left() ){
+        }else if (lessEqual(x.right(),racineGauche.left()) ){
           y = interval( (eval(x.left())).left(),(eval(x.right())).right());
-        }else if( racineGauche.right() <= x.right() && x.right() < 0 && x.left() <= racineGauche.left() ){
+        }else if(lessEqual(racineGauche.right(),x.right()) && x.right() < 0 && lessEqual(x.left(),racineGauche.left())){
           y = interval(minimum( (eval(x.left())).left(), (eval(x.right())).right() ), (eval(racineGauche)).right() );
-        }else if ( racineGauche.left() <= x.right() && x.right() < 0 && racineGauche.left() <= x.left() && x.left() < 0){
+        }else if (lessEqual(racineGauche.right(),x.right())  && x.right() < 0 && lessEqual(racineGauche.right(),x.left()) && x.left() < 0){
           y = interval( (eval(x.right())).right(), (eval(x.left())).left());
-        }else if(x.left() == 0 && x.right() >= racineDroit.right()){
+        }else if(x.left() == 0 && greaterEqual(x.right(),racineDroit.right())){
           y = interval( (eval( racineDroit.left() ) ).left(),+GAOL_INFINITY);
         }else if(x.left() == 0 && x.right() < racineDroit.left() ){
           y = interval( (eval(x.right())).left(),+GAOL_INFINITY);
-        }else if(x.right() == 0 && x.left() <= racineGauche.left() ){
+        }else if(x.right() == 0 && lessEqual(x.left(),racineGauche.left())){
           y = interval(-GAOL_INFINITY, (eval( racineGauche)).right() );
         }else if (x.right() == 0 && x.left() > racineGauche.right() ){
           y = interval(-GAOL_INFINITY, (eval(x.left())).right() );
